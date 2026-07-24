@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хогвартс: Магия Чисел</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #1a1a2e; /* Темно-синий, ночной Хогвартс */
+            background-image: radial-gradient(circle at top, #2a2a4e, #0f0f1a);
+            color: #f1c40f; /* Золотой цвет */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #game-container {
+            background: rgba(20, 20, 35, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(241, 196, 15, 0.2);
+            border: 2px solid #d4af37;
+        }
+        h1 {
+            color: #d4af37;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 24px;
+        }
+        .level-title {
+            color: #bdc3c7;
+            font-size: 16px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        #problem {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        input {
+            font-size: 32px;
+            padding: 10px;
+            width: 120px;
+            text-align: center;
+            background: #2c3e50;
+            color: #f1c40f;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            outline: none;
+            font-family: 'Georgia', serif;
+        }
+        input:focus {
+            box-shadow: 0 0 15px #d4af37;
+        }
+        button {
+            background-color: #8e44ad;
+            color: white;
+            border: 2px solid #9b59b6;
+            padding: 15px 35px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s;
+            font-family: 'Georgia', serif;
+            letter-spacing: 1px;
+        }
+        button:hover {
+            background-color: #9b59b6;
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.6);
+            transform: scale(1.05);
+        }
+        #message {
+            margin-top: 25px;
+            font-size: 20px;
+            height: 30px;
+        }
+        .magic-sparks {
+            font-size: 40px;
+            margin-top: 30px;
+            min-height: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <h1>⚡ Хогвартс: Магия Чисел 🦉</h1>
+        <div class="level-title">Курс 1: Зеркало Еиналеж (Умножение на 1)</div>
+        
+        <div id="problem">? × ? =</div>
+        <input type="number" id="answer" placeholder="?" autocomplete="off">
+        <br>
+        <button onclick="checkAnswer()">Люмос!</button>
+        
+        <div id="message"></div>
+        
+        <!-- Здесь будут появляться магические искры/свет -->
+        <div class="magic-sparks" id="garden"></div>
+    </div>
+
+    <script>
+        let num1, num2;
+        const garden = document.getElementById('garden');
+
+        function generateProblem() {
+            // Магия Зеркала
+            num1 = Math.floor(Math.random() * 9) + 1;
+            num2 = 1;
+            
+            if (Math.random() > 0.5) {
+                let temp = num1;
+                num1 = num2;
+                num2 = temp;
+            }
+            
+            document.getElementById('problem').innerText = num1 + ' × ' + num2 + ' = ';
+            document.getElementById('answer').value = '';
+            document.getElementById('message').innerText = '';
+            document.getElementById('answer').focus();
+        }
+
+        function checkAnswer() {
+            let userAnswer = parseInt(document.getElementById('answer').value);
+            let correctAnswer = num1 * num2;
+            let messageEl = document.getElementById('message');
+
+            if (userAnswer === correctAnswer) {
+                messageEl.innerText = '✨ 10 очков твоему факультету!';
+                messageEl.style.color = '#f1c40f'; // Золотой
+                
+                // Добавляем эффект заклинания
+                let spark = document.createElement('span');
+                spark.innerText = '✨';
+                garden.appendChild(spark);
+                
+                if (garden.children.length > 8) {
+                    garden.innerHTML = '✨';
+                }
+
+                setTimeout(generateProblem, 1500);
+            } else {
+                messageEl.innerText = 'Вспомни магию Зеркала Еиналеж 🪞';
+                messageEl.style.color = '#e74c3c'; // Красный (Гриффиндор)
+            }
+        }
+
+        generateProblem();
+        
+        document.getElementById('answer').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkAnswer();
+            }
+        });
+    </script>
+
+</body>
+</html>
