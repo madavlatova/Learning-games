@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌟 Учим таблицу умножения — игра для 1 класса</title>
+    <style>
+        /* ── Общий сброс и базовые стили ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #fdf8ed 0%, #fef6e4 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            margin: 0;
+        }
+
+        /* ── Главный контейнер ── */
+        .game-container {
+            max-width: 780px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 56px;
+            padding: 28px 28px 34px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 2px solid rgba(255, 215, 150, 0.3);
+            transition: all 0.2s;
+        }
+
+        /* ── Шапка ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px 8px;
+            margin-bottom: 18px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3d2b1a;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .title span {
+            background: #ffd93d;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 18px;
+            color: #3d2b1a;
+        }
+
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #4a3728;
+            background: rgba(255, 215, 150, 0.25);
+            padding: 4px 14px 4px 10px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+        }
+        .stat-item img,
+        .stat-item .emoji {
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        .stars-display {
+            display: flex;
+            gap: 4px;
+            font-size: 26px;
+        }
+
+        /* ── Экран выбора таблицы ── */
+        .screen {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(14px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .welcome-text {
+            text-align: center;
+            font-size: 22px;
+            color: #5a3f2b;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        .welcome-text .big-emoji {
+            font-size: 52px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .table-btn {
+            background: #fff5e8;
+            border: 2.5px solid #f0d5b8;
+            border-radius: 20px;
+            padding: 16px 4px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #4a3728;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 4px 0 #dbbd9e;
+            text-align: center;
+            font-family: inherit;
+            position: relative;
+            line-height: 1;
+        }
+        .table-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #dbbd9e;
+            background: #fffaf2;
+        }
+        .table-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #dbbd9e;
+        }
+        .table-btn .sub {
+            font-size: 14px;
+            font-weight: 400;
+            display: block;
+            color: #7a6048;
+            margin-top: 4px;
+        }
+        .table-btn .stars-mini {
+            font-size: 16px;
+            display: block;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+        .table-btn.mastered {
+            background: #d4edda;
+            border-color: #7ecf8a;
+            box-shadow: 0 4px 0 #5fa86a;
+        }
+        .table-btn.mastered:hover {
+            background: #c8e8cf;
+            box-shadow: 0 6px 0 #5fa86a;
+        }
+
+        .btn-all {
+            background: #ffd93d;
+            border-color: #f5c12a;
+            box-shadow: 0 4px 0 #dba81e;
+            font-size: 28px;
+            padding: 18px 4px;
+            grid-column: 1 / -1;
+        }
+        .btn-all:hover {
+            background: #ffe066;
+            box-shadow: 0 6px 0 #dba81e;
+        }
+
+        /* ── Игровой экран ── */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .back-btn {
+            background: #f0e4d6;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 18px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #4a3728;
+            cursor: pointer;
+            transition: all 0.12s;
+            font-family: inherit;
+            box-shadow: 0 3px 0 #ccb8a4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 0 #ccb8a4;
+            background: #f5ebe0;
+        }
+        .back-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #ccb8a4;
+        }
+
+        .table-label {
+            font-size: 22px;
+            font-weight: 600;
+            color: #5a3f2b;
+            background: rgba(255, 215, 150, 0.3);
+            padding: 4px 18px;
+            border-radius: 40px;
+        }
+
+        .problem-area {
+            background: #fffcf6;
+            border-radius: 40px;
+            padding: 22px 20px 20px;
+            margin: 6px 0 16px;
+            box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.04);
+            border: 2px solid rgba(240, 213, 184, 0.3);
+        }
+
+        .problem-text {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            color: #3d2b1a;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+        .problem-text .highlight {
+            color: #e67e22;
+            background: #fef0db;
+            padding: 0 12px;
+            border-radius: 16px;
+        }
+
+        .visual-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+            padding: 8px 4px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .visual-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .dot {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.10);
+            transition: all 0.2s;
+            flex-shrink: 0;
+            user-select: none;
+        }
+        .dot.small {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+        }
+        .dot.tiny {
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
+        }
+
+        /* ── Варианты ответов ── */
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 12px 0 6px;
+        }
+
+        .answer-btn {
+            background: #fff8f0;
+            border: 3px solid #ecdaca;
+            border-radius: 28px;
+            padding: 20px 8px;
+            font-size: 34px;
+            font-weight: 700;
+            color: #3d2b1a;
+            cursor: pointer;
+            transition: all 0.12s;
+            box-shadow: 0 5px 0 #d5c0ac;
+            font-family: inherit;
+            text-align: center;
+            line-height: 1;
+        }
+        .answer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #d5c0ac;
+            background: #fffcf6;
+        }
+        .answer-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #d5c0ac;
+        }
+        .answer-btn.correct {
+            background: #a8e6b0;
+            border-color: #5fbf6e;
+            box-shadow: 0 5px 0 #3f9e4e;
+            transform: scale(1.02);
+        }
+        .answer-btn.wrong {
+            background: #f8b5b5;
+            border-color: #e07070;
+            box-shadow: 0 5px 0 #b85454;
+            animation: shake 0.3s ease;
+        }
+        .answer-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+            transform: none !important;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-12px);
+            }
+            75% {
+                transform: translateX(12px);
+            }
+        }
+
+        .feedback-area {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            min-height: 50px;
+            padding: 10px 0 4px;
+            transition: all 0.2s;
+        }
+        .feedback-area .correct-fb {
+            color: #2d7d3a;
+        }
+        .feedback-area .wrong-fb {
+            color: #b14242;
+        }
+
+        /* ── Прогресс ── */
+        .progress-section {
+            margin-top: 18px;
+            background: #f5ede4;
+            border-radius: 30px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+        }
+
+        .progress-bar-wrap {
+            flex: 1;
+            min-width: 100px;
+            height: 14px;
+            background: #e4d5c4;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffb347, #ff8a5c);
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4a3728;
+            white-space: nowrap;
+        }
+
+        /* ── Звёздный дождь (конфетти) ── */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .confetti-piece {
+            position: absolute;
+            font-size: 36px;
+            animation: confettiFall linear forwards;
+            opacity: 0.9;
+        }
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-20px) rotate(0deg) scale(0.6);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* ── Адаптив ── */
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 18px 14px 24px;
+                border-radius: 36px;
+            }
+            .title {
+                font-size: 22px;
+            }
+            .title span {
+                font-size: 14px;
+                padding: 2px 10px;
+            }
+            .stat-item {
+                font-size: 16px;
+                padding: 2px 10px 2px 8px;
+            }
+            .stat-item .emoji {
+                font-size: 20px;
+            }
+            .problem-text {
+                font-size: 32px;
+            }
+            .answer-btn {
+                font-size: 28px;
+                padding: 16px 6px;
+            }
+            .dot {
+                width: 30px;
+                height: 30px;
+                font-size: 15px;
+            }
+            .dot.small {
+                width: 24px;
+                height: 24px;
+                font-size: 11px;
+            }
+            .dot.tiny {
+                width: 20px;
+                height: 20px;
+                font-size: 9px;
+            }
+            .table-grid {
+                grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+                gap: 8px;
+            }
+            .table-btn {
+                font-size: 20px;
+                padding: 12px 4px;
+            }
+            .table-btn .sub {
+                font-size: 11px;
+            }
+            .welcome-text {
+                font-size: 18px;
+            }
+            .feedback-area {
+                font-size: 20px;
+                min-height: 40px;
+            }
+            .progress-text {
+                font-size: 15px;
+            }
+            .game-container {
+                padding: 16px 12px 20px;
+            }
+            .answers {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .problem-text {
+                font-size: 26px;
+            }
+            .dot {
+                width: 26px;
+                height: 26px;
+                font-size: 12px;
+            }
+            .dot.small {
+                width: 20px;
+                height: 20px;
+                font-size: 9px;
+            }
+            .dot.tiny {
+                width: 16px;
+                height: 16px;
+                font-size: 7px;
+            }
+            .answer-btn {
+                font-size: 24px;
+                padding: 14px 4px;
+            }
+            .table-btn {
+                font-size: 18px;
+                padding: 10px 2px;
+            }
+            .table-grid {
+                grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+                gap: 6px;
+            }
+        }
+
+        /* ── Дополнительно ── */
+        .text-muted {
+            color: #8a7a6a;
+            font-weight: 400;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .gap-6 {
+            gap: 6px;
+        }
+        .gap-12 {
+            gap: 12px;
+        }
+
+        .celebration-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #e67e22;
+            animation: pop 0.5s ease;
+        }
+        @keyframes pop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Скрытый вспомогательный класс */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="app">
+        <!-- ШАПКА -->
+        <div class="header">
+            <div class="title">
+                🧮 <span>1 класс</span>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="emoji">⭐</span>
+                    <span id="totalStars">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="emoji">🎯</span>
+                    <span id="totalCorrect">0</span>
+                    <span class="text-muted">/</span>
+                    <span id="totalAttempts">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ЭКРАН ВЫБОРА ===== -->
+        <div class="screen active" id="selectScreen">
+            <div class="welcome-text">
+                <span class="big-emoji">🌈</span>
+                Выбери таблицу, которую хочешь выучить!
+                <br />
+                <span style="font-size:18px; color:#7a6048;">
+                    Нажимай на кнопки — получай ⭐ звёзды!
+                </span>
+            </div>
+
+            <div class="table-grid" id="tableGrid">
+                <!-- Генерируется JS -->
+            </div>
+
+            <div style="text-align:center; margin-top: 6px;">
+                <button class="table-btn btn-all" id="btnAllTables">
+                    🚀 Все таблицы сразу
+                    <span class="sub">смешанный режим</span>
+                </button>
+            </div>
+
+            <div style="text-align:center; margin-top: 20px; font-size:18px; color:#8a7a6a;">
+                💡 <strong>Совет:</strong> Начни с таблицы на 2, потом на 3, и так дальше!
+            </div>
+        </div>
+
+        <!-- ===== ЭКРАН ИГРЫ ===== -->
+        <div class="screen" id="gameScreen">
+            <div class="game-header">
+                <button class="back-btn" id="backToMenu">← Назад</button>
+                <span class="table-label" id="currentTableLabel">Таблица 2</span>
+                <div class="stars-display" id="gameStarsDisplay">☆☆☆☆☆</div>
+            </div>
+
+            <div class="problem-area">
+                <div class="problem-text" id="problemText">
+                    3 <span class="highlight">×</span> 4 <span class="highlight">=</span> ?
+                </div>
+                <div class="visual-grid" id="visualGrid">
+                    <!-- Генерируется JS -->
+                </div>
+            </div>
+
+            <div class="answers" id="answersContainer">
+                <!-- 4 кнопки генерируются JS -->
+            </div>
+
+            <div class="feedback-area" id="feedbackArea">
+                &nbsp;
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-text" id="progressText">⭐ 0 / 5</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-fill" id="progressFill" style="width:0%;"></div>
+                </div>
+                <div class="progress-text" id="progressPercent">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контейнер для конфетти -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <script>
+        // ─────────────────────────────────────────────────────────────
+        //  ОСНОВНАЯ ЛОГИКА
+        // ─────────────────────────────────────────────────────────────
+
+        // Состояние
+        const state = {
+            // Прогресс по таблицам: { 2: { stars: 0, correct: 0, total: 0 }, ... }
+            progress: {},
+            // Текущая таблица (число 2..9) или 'all'
+            currentTable: 2,
+            // Текущий вопрос
+            currentQuestion: null, // { a, b, answer, options }
+            // Заблокирован ли интерфейс (ожидание следующего вопроса)
+            locked: false,
+            // Общая статистика
+            totalCorrect: 0,
+            totalAttempts: 0,
+            // Для all-режима: список всех (a,b) и индекс
+            allQuestions: [],
+            allIndex: 0,
+            // Флаг: только что показали мастерство
+            justMastered: false,
+        };
+
+        // ── Инициализация прогресса ──
+        function initProgress() {
+            for (let t = 2; t <= 9; t++) {
+                if (!state.progress[t]) {
+                    state.progress[t] = { stars: 0, correct: 0, total: 0 };
+                }
+            }
+            // Также для 'all' режима храним отдельно
+            if (!state.progress.all) {
+                state.progress.all = { stars: 0, correct: 0, total: 0 };
+            }
+        }
+        initProgress();
+
+        // ── DOM ссылки ──
+        const $ = (id) => document.getElementById(id);
+        const selectScreen = $('selectScreen');
+        const gameScreen = $('gameScreen');
+        const tableGrid = $('tableGrid');
+        const btnAll = $('btnAllTables');
+        const backBtn = $('backToMenu');
+        const currentTableLabel = $('currentTableLabel');
+        const gameStarsDisplay = $('gameStarsDisplay');
+        const problemText = $('problemText');
+        const visualGrid = $('visualGrid');
+        const answersContainer = $('answersContainer');
+        const feedbackArea = $('feedbackArea');
+        const progressText = $('progressText');
+        const progressFill = $('progressFill');
+        const progressPercent = $('progressPercent');
+        const totalStarsEl = $('totalStars');
+        const totalCorrectEl = $('totalCorrect');
+        const totalAttemptsEl = $('totalAttempts');
+        const confettiContainer = $('confettiContainer');
+
+        // ── Вспомогательные ──
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function rand(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function clamp(v, min, max) {
+            return Math.max(min, Math.min(max, v));
+        }
+
+        // ── Цвета для точек ──
+        const dotColors = [
+            '#FF6B6B', '#4ECDC4', '#FFD93D', '#6C5CE7', '#FF8A5C',
+            '#A8E6CF', '#FFB7B2', '#74B9FF', '#FDCB6E', '#E17055',
+            '#00B894', '#6C5CE7', '#FD79A8', '#0984E3', '#FDCB6E',
+        ];
+
+        function getDotColor(index) {
+            return dotColors[index % dotColors.length];
+        }
+
+        // ── Отображение звёзд ──
+        function renderStars(count, max = 5) {
+            return '⭐'.repeat(Math.min(count, max)) + '☆'.repeat(Math.max(0, max - count));
+        }
+
+        // ── Обновить общую статистику ──
+        function updateTotalStats() {
+            totalStarsEl.textContent = Object.values(state.progress).reduce((s, p) => s + p.stars, 0);
+            totalCorrectEl.textContent = state.totalCorrect;
+            totalAttemptsEl.textContent = state.totalAttempts;
+        }
+
+        // ── Обновить прогресс таблицы ──
+        function updateTableProgress(table) {
+            const p = state.progress[table] || { stars: 0, correct: 0, total: 0 };
+            const stars = p.stars || 0;
+            const maxStars = 5;
+            const filled = Math.min(stars, maxStars) / maxStars * 100;
+
+            progressText.textContent = `⭐ ${stars} / ${maxStars}`;
+            progressFill.style.width = `${filled}%`;
+            progressPercent.textContent = `${Math.round(filled)}%`;
+
+            // Отображение звёзд в игровом экране
+            gameStarsDisplay.textContent = renderStars(stars, maxStars);
+
+            // Обновить кнопку в сетке
+            const btn = document.querySelector(`.table-btn[data-table="${table}"]`);
+            if (btn) {
+                const miniStars = btn.querySelector('.stars-mini');
+                if (miniStars) {
+                    miniStars.textContent = renderStars(stars, maxStars);
+                }
+                if (stars >= maxStars) {
+                    btn.classList.add('mastered');
+                } else {
+                    btn.classList.remove('mastered');
+                }
+            }
+            updateTotalStats();
+        }
+
+        // ── Сохранить прогресс (localStorage) ──
+        function saveProgress() {
+            try {
+                const data = {
+                    progress: state.progress,
+                    totalCorrect: state.totalCorrect,
+                    totalAttempts: state.totalAttempts,
+                };
+                localStorage.setItem('multGameProgress', JSON.stringify(data));
+            } catch (_) { /* ignore */ }
+        }
+
+        function loadProgress() {
+            try {
+                const raw = localStorage.getItem('multGameProgress');
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (data.progress) {
+                    for (const k of Object.keys(data.progress)) {
+                        if (state.progress[k] !== undefined) {
+                            state.progress[k] = data.progress[k];
+                        }
+                    }
+                }
+                if (data.totalCorrect !== undefined) state.totalCorrect = data.totalCorrect;
+                if (data.totalAttempts !== undefined) state.totalAttempts = data.totalAttempts;
+            } catch (_) { /* ignore */ }
+        }
+
+        // ── Создать сетку таблиц ──
+        function renderTableGrid() {
+            tableGrid.innerHTML = '';
+            for (let t = 2; t <= 9; t++) {
+                const p = state.progress[t] || { stars: 0 };
+                const stars = p.stars || 0;
+                const btn = document.createElement('button');
+                btn.className = 'table-btn' + (stars >= 5 ? ' mastered' : '');
+                btn.dataset.table = t;
+                btn.innerHTML = `
+                    ${t}
+                    <span class="sub">× 1..10</span>
+                    <span class="stars-mini">${renderStars(stars, 5)}</span>
+                `;
+                btn.addEventListener('click', () => startGame(t));
+                tableGrid.appendChild(btn);
+            }
+            // Кнопка "Все таблицы" уже есть в DOM
+        }
+
+        // ── Переключение экранов ──
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            $(screenId).classList.add('active');
+        }
+
+        // ── Старт игры для таблицы ──
+        function startGame(table) {
+            state.currentTable = table;
+            state.locked = false;
+            state.justMastered = false;
+
+            // Если all-режим, подготовить вопросы
+            if (table === 'all') {
+                state.allQuestions = [];
+                for (let a = 2; a <= 9; a++) {
+                    for (let b = 1; b <= 10; b++) {
+                        state.allQuestions.push({ a, b });
+                    }
+                }
+                shuffle(state.allQuestions);
+                state.allIndex = 0;
+                currentTableLabel.textContent = '🌟 Все таблицы';
+            } else {
+                currentTableLabel.textContent = `Таблица ${table}`;
+            }
+
+            showScreen('gameScreen');
+            updateTableProgress(table);
+            nextQuestion();
+        }
+
+        // ── Сгенерировать вопрос ──
+        function generateQuestion(table) {
+            let a, b;
+            if (table === 'all') {
+                // Берём из подготовленного списка
+                if (state.allIndex >= state.allQuestions.length) {
+                    // Перемешать заново
+                    shuffle(state.allQuestions);
+                    state.allIndex = 0;
+                }
+                const q = state.allQuestions[state.allIndex];
+                a = q.a;
+                b = q.b;
+                state.allIndex++;
+            } else {
+                a = table;
+                b = rand(1, 10);
+            }
+
+            const answer = a * b;
+
+            // Генерация вариантов
+            let options = new Set();
+            options.add(answer);
+            // Добавляем 3 неправильных, но близких
+            let attempts = 0;
+            while (options.size < 4 && attempts < 200) {
+                attempts++;
+                let offset = rand(1, Math.max(3, Math.floor(answer / 3) + 2));
+                if (Math.random() < 0.5) offset = -offset;
+                let candidate = answer + offset;
+                if (candidate < 1) candidate = answer + rand(1, 4);
+                if (candidate > 100) candidate = answer - rand(1, 4);
+                if (candidate !== answer && candidate > 0 && candidate <= 100) {
+                    options.add(candidate);
+                }
+            }
+            // Если всё ещё меньше 4, добавить случайные
+            while (options.size < 4) {
+                const c = rand(1, 90);
+                if (!options.has(c)) options.add(c);
+            }
+
+            let optArr = shuffle([...options]);
+            // Убедимся, что правильный ответ есть
+            if (!optArr.includes(answer)) {
+                optArr[rand(0, 3)] = answer;
+            }
+
+            return { a, b, answer, options: optArr };
+        }
+
+        // ── Следующий вопрос ──
+        function nextQuestion() {
+            if (state.locked) return;
+
+            const table = state.currentTable;
+            const q = generateQuestion(table);
+            state.currentQuestion = q;
+
+            // Обновить текст
+            problemText.innerHTML = `
+                ${q.a} <span class="highlight">×</span> ${q.b} <span class="highlight">=</span> ?
+            `;
+
+            // Визуализация
+            renderVisual(q.a, q.b);
+
+            // Кнопки ответов
+            answersContainer.innerHTML = '';
+            const shuffledOptions = shuffle([...q.options]);
+            for (const opt of shuffledOptions) {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = opt;
+                btn.dataset.value = opt;
+                btn.addEventListener('click', () => handleAnswer(btn, opt, q.answer));
+                answersContainer.appendChild(btn);
+            }
+
+            // Очистить фидбек
+            feedbackArea.innerHTML = '&nbsp;';
+
+            // Разблокировать
+            state.locked = false;
+        }
+
+        // ── Визуализация сетки ──
+        function renderVisual(a, b) {
+            visualGrid.innerHTML = '';
+            const maxDots = 60; // если больше, делаем мельче
+            const total = a * b;
+            let dotClass = '';
+            if (total > 40) dotClass = 'tiny';
+            else if (total > 20) dotClass = 'small';
+
+            // Если слишком много, показываем компактно
+            const showCount = Math.min(total, 90);
+
+            // Решаем, сколько строк и столбцов показывать
+            // Показываем все строки, но если столбцов > 10, делаем перенос
+            const cols = Math.min(b, 10);
+            const rows = Math.ceil(showCount / cols);
+
+            let count = 0;
+            for (let r = 0; r < rows && count < showCount; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'visual-row';
+                const colsThisRow = Math.min(cols, showCount - count);
+                for (let c = 0; c < colsThisRow; c++) {
+                    const dot = document.createElement('span');
+                    dot.className = `dot ${dotClass}`;
+                    const idx = count % dotColors.length;
+                    dot.style.background = dotColors[idx];
+                    dot.textContent = '●';
+                    dot.style.color = 'rgba(255,255,255,0.5)';
+                    rowDiv.appendChild(dot);
+                    count++;
+                }
+                visualGrid.appendChild(rowDiv);
+            }
+
+            // Если места мало, показываем подсказку
+            if (total > 60) {
+                const hint = document.createElement('div');
+                hint.style.cssText =
+                    'width:100%; text-align:center; font-size:16px; color:#7a6048; margin-top:6px;';
+                hint.textContent = `✨ ${a} раз по ${b} = ${total}`;
+                visualGrid.appendChild(hint);
+            }
+        }
+
+        // ── Обработка ответа ──
+        function handleAnswer(btn, selected, correct) {
+            if (state.locked) return;
+            state.locked = true;
+
+            const isCorrect = selected === correct;
+            const table = state.currentTable;
+            const p = state.progress[table] || { stars: 0, correct: 0, total: 0 };
+            p.total = (p.total || 0) + 1;
+            if (isCorrect) {
+                p.correct = (p.correct || 0) + 1;
+                state.totalCorrect++;
+            }
+            state.totalAttempts++;
+
+            // Обновить прогресс
+            state.progress[table] = p;
+
+            // Подсчёт звёзд: каждые 3 правильных = 1 звезда (максимум 5)
+            const newStars = Math.min(5, Math.floor(p.correct / 3));
+            const starsEarned = newStars - (p.stars || 0);
+            if (starsEarned > 0) {
+                p.stars = newStars;
+                // Конфетти за новую звезду
+                if (starsEarned > 0) {
+                    launchConfetti(12);
+                    if (p.stars >= 5 && !state.justMastered) {
+                        state.justMastered = true;
+                        launchConfetti(30);
+                        feedbackArea.innerHTML =
+                            `<span class="celebration-text">🎉 УРА! Ты выучил таблицу ${table === 'all' ? 'все' : table}! 🎉</span>`;
+                        setTimeout(() => {
+                            feedbackArea.innerHTML = '&nbsp;';
+                        }, 2500);
+                    }
+                }
+            }
+
+            // Визуальная обратная связь
+            const allBtns = answersContainer.querySelectorAll('.answer-btn');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                const val = parseInt(b.dataset.value);
+                if (val === correct) b.classList.add('correct');
+                if (val === selected && !isCorrect) b.classList.add('wrong');
+            });
+
+            // Фидбек
+            if (isCorrect) {
+                feedbackArea.innerHTML = `<span class="correct-fb">✅ Молодец! Правильно! 🎉</span>`;
+            } else {
+                feedbackArea.innerHTML = `<span class="wrong-fb">❌ Ой! Правильный ответ: ${correct}</span>`;
+            }
+
+            // Обновить отображение прогресса
+            updateTableProgress(table);
+            updateTotalStats();
+            saveProgress();
+
+            // Следующий вопрос через задержку
+            setTimeout(() => {
+                // Если таблица освоена, показываем поздравительный экран ненадолго
+                if (p.stars >= 5 && !state.justMastered) {
+                    state.justMastered = true;
+                    launchConfetti(20);
+                    feedbackArea.innerHTML =
+                        `<span class="celebration-text">🎉 Отлично! Таблица ${table === 'all' ? 'все' : table} выучена! 🌟</span>`;
+                    setTimeout(() => {
+                        feedbackArea.innerHTML = '&nbsp;';
+                        state.justMastered = false;
+                        nextQuestion();
+                    }, 1800);
+                } else {
+                    state.justMastered = false;
+                    nextQuestion();
+                }
+            }, isCorrect ? 700 : 1500);
+        }
+
+        // ── Конфетти ──
+        function launchConfetti(count = 16) {
+            const container = confettiContainer;
+            const emojis = ['⭐', '🌟', '🎉', '🎊', '✨', '💫', '🌈', '🎈', '🎀', '💖', '🌸', '🍭'];
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                el.textContent = emojis[rand(0, emojis.length - 1)];
+                el.style.left = rand(5, 95) + '%';
+                el.style.fontSize = rand(20, 48) + 'px';
+                el.style.animationDuration = (rand(15, 30) / 10) + 's';
+                el.style.animationDelay = (rand(0, 10) / 10) + 's';
+                el.style.transform = `rotate(${rand(0, 360)}deg)`;
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 4000);
+            }
+        }
+
+        // ── Навигация ──
+        backBtn.addEventListener('click', () => {
+            showScreen('selectScreen');
+            renderTableGrid();
+            updateTotalStats();
+            // Сохраняем прогресс
+            saveProgress();
+        });
+
+        btnAll.addEventListener('click', () => {
+            startGame('all');
+        });
+
+        // ── Загрузка сохранённого прогресса ──
+        loadProgress();
+
+        // ── Инициализация ──
+        renderTableGrid();
+        updateTotalStats();
+
+        // Показываем все таблицы с их звёздами
+        for (let t = 2; t <= 9; t++) {
+            updateTableProgress(t);
+        }
+        // Также обновить all если есть
+        if (state.progress.all) {
+            // отображаем в stats
+        }
+        updateTotalStats();
+
+        // Если есть сохранённый прогресс, показываем его
+        console.log('🌟 Игра загружена! Удачи в изучении таблицы умножения!');
+
+        // ── Автозапуск с первой таблицы (можно раскомментировать) ──
+        // startGame(2);
+
+        // ── Обработка нажатия Enter (для доступности) ──
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && state.locked === false) {
+                // Ничего не делаем, чтобы не мешать
+            }
+        });
+
+        // ── Небольшое улучшение: при клике на пустое место — ничего ──
+        console.log('💡 Подсказка: начни с таблицы 2, потом 3, 4... У тебя всё получится!');
+    </script>
+
+</body>
+</html>
